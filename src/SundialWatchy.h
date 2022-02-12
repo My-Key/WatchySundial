@@ -3,9 +3,8 @@
 
 #include <Watchy.h>
 #include "../include/images.h"
-#include "../include/EMPORO8pt7b.h"
-#include "../include/EMPORO10pt7b.h"
-#include "../include/EMPORO12pt7b.h"
+#include "../include/EMPORO9pt7b.h"
+#include "../include/EMPORO13pt7b.h"
 
 typedef struct Vector
 {
@@ -20,7 +19,7 @@ public:
   void drawWatchFace();
   void drawTime();
   void drawDate();
-  void drawBattery(int x, int y, uint16_t color, bool even);
+  void drawBattery(int x, int y, uint16_t color, bool even, int batState);
 
   int getBatteryFill(int steps);
 

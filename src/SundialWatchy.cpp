@@ -4,65 +4,34 @@ const float VOLTAGE_MIN = 3.4;
 const float VOLTAGE_MAX = 4.2;
 const float VOLTAGE_RANGE = VOLTAGE_MAX - VOLTAGE_MIN;
 
-const int TOP_TICK_SIZE = 26;
-const int TICK_SIZE = 14;
-const int SMALL_TICK = 4;
+const int HOUR_NUMBERS_X = 24;
+const int HOUR_NUMBERS_Y = 23;
 
-const Vector TOP_TICK_1 = {-TICK_SIZE / 2, 0};
-const Vector TOP_TICK_2 = {TICK_SIZE / 2, 0};
-const Vector TOP_TICK_3 = {0, TOP_TICK_SIZE};
-const Vector TOP_TICK_4 = {0, TOP_TICK_SIZE / 2};
+const int STYLE_MASK_X = 96;
+const int STYLE_MASK_Y = 47;
 
-const Vector TICK_1 = {-TICK_SIZE / 2, 0};
-const Vector TICK_2 = {TICK_SIZE / 2, 0};
-const Vector TICK_3 = {0, TICK_SIZE};
-const Vector TICK_4 = {0, TICK_SIZE / 2};
+const int STYLE_SHADOW_X = 91;
+const int STYLE_SHADOW_Y = 47;
 
-const Vector SMALL_TICK_1 = {-SMALL_TICK / 2, -SMALL_TICK / 2};
-const Vector SMALL_TICK_2 = {SMALL_TICK / 2, SMALL_TICK / 2};
-const Vector SMALL_TICK_3 = {-TICK_SIZE, TICK_SIZE};
-const Vector SMALL_TICK_4 = {-TICK_SIZE / 2, TICK_SIZE / 2};
+const int DATE_Y = 136;
+const int DAY_Y = 164;
 
-const Vector SMALL_TICK_POS_1 = {48,-84};
-const Vector SMALL_TICK_POS_2 = {84,-48};
+const int STYLE_CORNER_1_X = 96;
+const int STYLE_CORNER_1_Y = 100;
+const int STYLE_CORNER_2_X = 103;
+const int STYLE_CORNER_2_Y = 86;
 
-const int PIN_SIZE = 4;
-
-const Vector PIN_1 = {-PIN_SIZE / 2, PIN_SIZE / 2};
-const Vector PIN_2 = {PIN_SIZE / 2, PIN_SIZE / 2};
-const Vector PIN_3 = {0, -PIN_SIZE / 2};
-
-const int LENGTH_BACK_OFFSET = 10;
-const int LENGTH_FORWARD_OFFSET = 18;
-const int HOUR_HAND_WIDTH = 24;
-const int HOUR_HAND_LENGTH = 35;
-
-const Vector HOUR_HAND_1 = {-HOUR_HAND_WIDTH / 2, LENGTH_BACK_OFFSET};
-const Vector HOUR_HAND_2 = {HOUR_HAND_WIDTH / 2, LENGTH_BACK_OFFSET};
-const Vector HOUR_HAND_3 = {0, -HOUR_HAND_LENGTH - LENGTH_FORWARD_OFFSET};
-const Vector HOUR_HAND_4 = {0, -HOUR_HAND_LENGTH - LENGTH_FORWARD_OFFSET + 25};
-
-const int MINUTE_HAND_WIDTH = 12;
-const int MINUTE_HAND_LENGTH = 75;
-const int BORDER_WIDTH = 2;
-
-const Vector MINUTE_HAND_START = {0, -HOUR_HAND_LENGTH};
-const Vector MINUTE_HAND_1 = {-MINUTE_HAND_WIDTH / 2, LENGTH_BACK_OFFSET};
-const Vector MINUTE_HAND_2 = {MINUTE_HAND_WIDTH / 2, LENGTH_BACK_OFFSET};
-const Vector MINUTE_HAND_3 = {0, -MINUTE_HAND_LENGTH};
-const Vector MINUTE_HAND_4 = {0, -MINUTE_HAND_LENGTH + 25};
-
-const int BATTERY_LENGTH = MINUTE_HAND_1.y - MINUTE_HAND_4.y;
-
-const double STEP_MINUTE = 360/60;
-const double STEP_HOUR = 360/12;
-
-const Vector CORNER_1 = {33, 99};
-const Vector CORNER_2 = {99, 33};
-const Vector CORNER_3 = {99, 99};
-const Vector CORNER_4 = {80, 80};
+const int BATTERY_CENTER_X = 100;
+const int BATTERY_Y = 175;
 
 const Vector SHADOW[] = {{0,-1}, {1,-1}, {1,-1}, {1,-1}, {2,0}, {2,0}, {-2,0}, {-2,0}, {-1,-1}, {-1,-1}, {-1,-1}, {0,-1}};
+
+const unsigned char* STYLE_SHADOW[12] = {
+	epd_bitmap_StyleShadow3, epd_bitmap_StyleShadow4, epd_bitmap_StyleShadow4,
+	epd_bitmap_StyleShadow4, epd_bitmap_StyleShadow5, epd_bitmap_StyleShadow5,
+  epd_bitmap_StyleShadow1, epd_bitmap_StyleShadow1, epd_bitmap_StyleShadow2,
+  epd_bitmap_StyleShadow2, epd_bitmap_StyleShadow2, epd_bitmap_StyleShadow3
+};
 
 void SundialWatchy::drawWatchFace()
 {
@@ -74,37 +43,29 @@ void SundialWatchy::drawWatchFace()
 
   drawBitmap(0,0, epd_bitmap_BG, 200, 200, GxEPD_WHITE, true);
   drawBitmap(0 + shadowOffset.x, 0 + shadowOffset.y, epd_bitmap_FG, 200, 200, GxEPD_BLACK, true);
-  //drawBitmap(-1,0, epd_bitmap_FG2, 200, 200, GxEPD_BLACK, false);
-  //drawBitmap(-1,0, epd_bitmap_FG2, 200, 200, GxEPD_BLACK, true);
   display.drawBitmap(0,0, epd_bitmap_FG, 200, 200, GxEPD_WHITE);
 
-  drawBitmap(24 + shadowOffset.x, 23 + shadowOffset.y, epd_bitmap_HourNumbers, 152, 81, GxEPD_BLACK, true);
-  //display.drawBitmap(24-1,23, epd_bitmap_HourNumbers, 152, 81, GxEPD_BLACK);
-  //display.drawBitmap(24+1,23, epd_bitmap_HourNumbers, 152, 81, GxEPD_BLACK);
-  //display.drawBitmap(24,23-1, epd_bitmap_HourNumbers, 152, 81, GxEPD_BLACK);
-  //display.drawBitmap(24,23+1, epd_bitmap_HourNumbers, 152, 81, GxEPD_BLACK);
+  drawBitmap(HOUR_NUMBERS_X + shadowOffset.x, HOUR_NUMBERS_Y + shadowOffset.y, epd_bitmap_HourNumbers, 152, 81, GxEPD_BLACK, true);
 
-  display.drawBitmap(24,23, epd_bitmap_HourNumbers, 152, 81, GxEPD_BLACK);
+  display.drawBitmap(HOUR_NUMBERS_X, HOUR_NUMBERS_Y, epd_bitmap_HourNumbers, 152, 81, GxEPD_BLACK);
   
   drawTime();
 
-  display.drawBitmap(94,47, epd_bitmap_StyleMask, 12, 57, GxEPD_BLACK);
-  display.drawBitmap(94 - shadowOffset.x,47 - shadowOffset.y, epd_bitmap_StyleMask, 12, 57, GxEPD_WHITE);
+  display.drawBitmap(STYLE_MASK_X, STYLE_MASK_Y, epd_bitmap_StyleMask, 8, 54, GxEPD_WHITE);
 
-
-  display.drawBitmap(94,47, epd_bitmap_StyleShadow, 12, 57, GxEPD_BLACK);
+  display.drawBitmap(STYLE_SHADOW_X, STYLE_SHADOW_Y, STYLE_SHADOW[currentTime.Hour %12], 18, 55, GxEPD_BLACK);
 
   drawDate();
 
-  drawBattery(100, 175, GxEPD_BLACK, true);
-  drawBattery(100 + shadowOffset.x, 175 + shadowOffset.y, GxEPD_WHITE, true);
-  drawBattery(100, 175, GxEPD_BLACK, false);
-}
-
-void SundialWatchy::drawBattery(int x, int y, uint16_t color, bool even)
-{
   int batState = getBatteryFill(10);
 
+  drawBattery(BATTERY_CENTER_X, BATTERY_Y, GxEPD_BLACK, true, batState);
+  drawBattery(BATTERY_CENTER_X + shadowOffset.x, BATTERY_Y + shadowOffset.y, GxEPD_WHITE, true, batState);
+  drawBattery(BATTERY_CENTER_X, BATTERY_Y, GxEPD_BLACK, false, batState);
+}
+
+void SundialWatchy::drawBattery(int x, int y, uint16_t color, bool even, int batState)
+{
   const int segmentWidth = 16;
 
   int startX = x - segmentWidth * batState / 2;
@@ -174,7 +135,7 @@ static String numberToRoman(int number)
 
 void SundialWatchy::drawDate()
 {
-  display.setFont(&EMPORO8pt7b);
+  display.setFont(&EMPORO9pt7b);
 
   String dayOfWeek = dayStr(currentTime.Wday);
 
@@ -185,41 +146,14 @@ void SundialWatchy::drawDate()
   uint16_t w, h;
   display.getTextBounds(date, 0, 0, &x1, &y1, &w, &h);
 
-  display.setCursor(100 - w / 2 , 135);
+  display.setCursor(100 - w / 2 , DATE_Y);
   display.print(date);
   
-  display.setFont(&EMPORO12pt7b);
+  display.setFont(&EMPORO13pt7b);
   
   display.getTextBounds(dayOfWeek, 0, 0, &x1, &y1, &w, &h);
-  display.setCursor(100 - w / 2, 160);
+  display.setCursor(100 - w / 2, DAY_Y);
   display.println(dayOfWeek);
-}
-
-static double dotProduct(Vector v1, Vector v2)
-{
-  return v1.x * v2.x + v1.y * v2.y;
-}
-
-static double crossProduct(Vector v1, Vector v2)
-{
-  return v1.x * v2.y - v1.y * v2.x;
-}
-
-static Vector rotateVectorByRightAngle(Vector vector, int angle)
-{
-  angle = angle % 4;
-
-  switch (angle)
-  {
-    case 1:
-      return {-vector.y, vector.x};
-    case 2:
-      return {-vector.x, -vector.y};
-    case 3:
-      return {vector.y, -vector.x};
-    default:
-      return vector;
-  }
 }
 
 int SundialWatchy::getBatteryFill(int steps)
@@ -236,17 +170,6 @@ int SundialWatchy::getBatteryFill(int steps)
   return batState;
 }
 
-static Vector flip(Vector vector, bool negativeX, bool negativeY)
-{
-  if (negativeX)
-    vector.x *= -1;
-
-  if (negativeY)
-    vector.y *= -1;
-
-  return vector;
-}
-
 static double smoothstep(double x) {
   // Evaluate polynomial
   return x * x * (3 - 2 * x);
@@ -261,7 +184,7 @@ void SundialWatchy::drawTime()
   double angle = minutes / 4.0;
 
   Vector hour1 = rotateVector({-100,0}, angle);
-  double scale = smoothstep(abs((((hour + 6) % 12) * 60 + minute) / 360.0 - 1));
+  double scale = smoothstep(abs(minutes / 360.0 - 1));
 
   hour1.x *= 0.7 + 0.3 * scale;
   hour1.y *= 0.7 + 0.3 * scale;
@@ -269,9 +192,9 @@ void SundialWatchy::drawTime()
   hour1.x += 100;
   hour1.y += 100;
 
-  fillTriangle(96,100, 96,86, hour1.x,hour1.y, GxEPD_BLACK, true);
-  fillTriangle(96,86, 103,86, hour1.x,hour1.y, GxEPD_BLACK, true);
-  fillTriangle(103,86, 103,100, hour1.x,hour1.y, GxEPD_BLACK, true);
+  fillTriangle(STYLE_CORNER_1_X,STYLE_CORNER_2_Y, STYLE_CORNER_1_X,STYLE_CORNER_1_Y, hour1.x,hour1.y, GxEPD_BLACK, true);
+  fillTriangle(STYLE_CORNER_1_X,STYLE_CORNER_1_Y, STYLE_CORNER_2_X,STYLE_CORNER_1_Y, hour1.x,hour1.y, GxEPD_BLACK, true);
+  fillTriangle(STYLE_CORNER_2_X,STYLE_CORNER_1_Y, STYLE_CORNER_2_X,STYLE_CORNER_2_Y, hour1.x,hour1.y, GxEPD_BLACK, true);
 }
 
 #ifndef _swap_int16_t
